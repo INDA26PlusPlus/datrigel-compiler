@@ -8,7 +8,7 @@
 
 <loop> ::= "loop" "(" <segment>* <claim> ")"
 
-<tilldela> ::= <variabel> "<-" <tal>
+<tilldela> ::= <variabel> "<-" <expression>
 
 <claim> ::= ":" (<term> | <expression>) <ekvivalensrelation> (<term> | <expression>)
 

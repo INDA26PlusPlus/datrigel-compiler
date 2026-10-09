@@ -154,7 +154,7 @@ enum Segment {
     },
     Tilldela {
         variabel: String,
-        tal: String,
+        expression: Box<Expression>,
     },
 }
 
@@ -262,11 +262,11 @@ impl Parser {
         // Segment is a "tilldela"
         else if matches!(self.peek_next(), Token::Anta) && matches!(self.peek(), Token::Variabel(_)) {
             // om nästa token är anta -> parse tilldela
-            let (variabel_temp, tal_temp) = self.parse_tilldela();
+            let (variabel_temp, expression_temp) = self.parse_tilldela();
             // pushes to the next token. Checks "."
             if self.peek() != Token::Punkt {panic!("No dot found after segment")}
             self.next_token();
-            return Segment::Tilldela { variabel: variabel_temp, tal: tal_temp }
+            return Segment::Tilldela { variabel: variabel_temp, expression: expression_temp }
         } 
         else if matches!(self.peek(), Token::Variabel(_)) || matches!(self.peek(), Token::Tal(_)) {
             // Segment is a "expression" 
@@ -333,7 +333,7 @@ impl Parser {
         panic!("Could not parse loop")
     }
     // Parse tilldela. Return (variabel, tal)
-    fn parse_tilldela(&mut self) -> (String, String) {
+    fn parse_tilldela(&mut self) -> (String, Box<Expression>) {
         let v_l = match self.peek() {
             Token::Variabel(text) => text,
             _ => panic!("Could no find variabel when parsing tilldela")
@@ -341,14 +341,21 @@ impl Parser {
         self.next_token();
         if matches!(self.peek(), Token::Anta) {
             self.next_token();
-            let h_l = match self.peek() {
-            Token::Tal(text) => text,
-            _ => panic!("Could no find tal when parsing tilldela")
+            // If expression logic.
+            if matches!(self.peek(), Token::Variabel(_)) || matches!(self.peek(), Token::Tal(_)){
+                if matches!(self.peek_next(), Token::Plus) || matches!(self.peek_next(), Token::Minus)  {
+                    let (term_temp, operator_temp, expression_temp) = self.parse_expression();
+                    let expression_temp = Box::new(Expression::Binary { v_l: term_temp, operator: operator_temp, h_l: expression_temp });
+                    return (v_l, expression_temp)
+                } else {
+                    let term_temp = Box::new(Expression::Term_(self.parse_term()));
+                    return (v_l, term_temp)
+                }
+            }
+            panic!("Could no find expression or term when parsing tilldela")
         };
         // To push onto the next token (For other function to work.)
-        self.next_token();
-        return (v_l, h_l)
-        } panic!("Could not find Anta")
+        panic!("Could not find Anta");
     }
 
     // Parse expression. Rekursive. 
