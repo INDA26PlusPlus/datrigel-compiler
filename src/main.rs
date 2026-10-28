@@ -21,8 +21,9 @@ fn main() -> io::Result<()> {
         offset: 0,
     };
     // Prints syntax_tree using debug
-    let syntax_tree = parser.parse_program();
-    print_syntaxtree(&syntax_tree);
+    let (Segment_syntax_tree, return_value) = parser.parse_program();
+    print_syntaxtree(&Segment_syntax_tree);
+    println!("{return_value:#?}");
 
     Ok(())
 }   
@@ -54,7 +55,7 @@ pub enum Token {
 }  
 
 // List of valid heltal / bokstäver
-static BOKSTAV_LISTA: [char; 7] = ['x','z','y','q','h','j','k'];
+static BOKSTAV_LISTA: [char; 26] = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
 static HELTAL_LISTA: [char; 10] = ['0','1','2','3','4','5','6','7','8','9'];
 
 // Lexical analysis
@@ -142,6 +143,7 @@ fn tokenizer(src: String) -> Vec<Token> {
 #[derive(Debug)]
 enum Program {
     SegmentLista(Vec<Segment>),
+    Return_value(Term),
 }
 
 // Specificerar states för <Segment>
@@ -219,7 +221,7 @@ impl Parser {
         self.offset += 1;
     }
     // Parsar ett program,
-    fn parse_program(&mut self) -> Vec<Segment> {
+    fn parse_program(&mut self) -> (Vec<Segment>, Term) {
         // Check if first token is Programstart, else Error
         if self.peek() != Token::Programstart {panic!("Parse Error")}
         self.next_token();
@@ -231,11 +233,14 @@ impl Parser {
             // Checkar om programmet är slut annars.
             if self.peek() == Token::Programslut {
                 self.next_token();
-                if self.offset < self.tokenlist.len() {
-                    panic!("Program ends early")
+                if matches!(self.peek(), Token::Variabel(_)) || matches!(self.peek(), Token::Tal(_)) {
+                    let return_value = self.parse_term();
+                    if self.offset < self.tokenlist.len() {
+                        panic!("Program ends early")
+                    }
+                    // Returnerar segmentlistan för programmet.
+                    return (segmentlista, return_value)
                 }
-                // Returnerar segmentlistan för programmet.
-                return segmentlista
             } else {
                 segmentlista.push(self.parse_segment());
             }

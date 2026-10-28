@@ -1,6 +1,6 @@
 ``` BNF
 
-<program> ::= "a)" <segment>* "V.S.V"
+<program> ::= "a)" <segment>* "V.S.V:" <term>
 
 <segment> ::= (<expression> | <loop> | <tilldela>) "."
 
@@ -21,13 +21,32 @@
 <tal> ::= <heltal>+
 
 <heltal> ::= [0-9]
-<bokstav> ::= "x" 
-        | "z"
-        | "y"
-        | "q"
-        | "h"
-        | "j"
-        | "k"
+<bokstav> ::= "a"
+    | "b" 
+    | "c"
+    | "d"
+    | "e"
+    | "f"
+    | "g"
+    | "h"
+    | "i"
+    | "j"
+    | "k"
+    | "l"
+    | "m"
+    | "n"
+    | "o"
+    | "p"
+    | "q"
+    | "r"
+    | "s"
+    | "t"
+    | "u"
+    | "v"
+    | "w"
+    | "x"
+    | "y"
+    | "z"
 
 ``````
 

@@ -1,10 +1,10 @@
 a)
 
 loop (
-    xxzh - (7+z). 
-    : 5-z!=qzz
+    something - (7 + icecold). 
+    : 5- icecold != tempcontainer
     ).    
-kz - (q-0).
-h <- 3.
+whythis - (q-0).
+returnvalue <- 3.
     
-V.S.V
+V.S.V returnvalue
