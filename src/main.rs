@@ -15,7 +15,7 @@ mod tests;
 
 fn main() -> io::Result<()> {
     // Taking a input
-    let mut buffer = fs::read_to_string("../test_src_code/test_src_qbe_code.txt")?;
+    let mut buffer = fs::read_to_string("../fibonacci_src_code.txt")?;
     // Runs lexical on tokenizer
     let token_list = tokenizer(buffer);
     // Setting up parser object
@@ -25,8 +25,6 @@ fn main() -> io::Result<()> {
     };
     // Prints syntax_tree using debug
     let (Segment_syntax_tree, return_value) = parser.parse_program();
-    print_syntaxtree(&Segment_syntax_tree, &return_value);
-
     // Work in progress QBE translator
     let QBE_string = ast_to_qbe(&Segment_syntax_tree, &return_value);
     println!("{}", QBE_string);
@@ -624,7 +622,7 @@ fn translate_return_term(input_term: &Term, nested_counter: &mut usize, variable
 
             let result = temp_variable_name_generation(nested_counter);
             buffer.push_str(&format!("  {result} =w loadw {slot}\n"));
-            buffer.push_str(&format!("%printed =w call $printf(l $fmt_int, w {result}, ...)\n")); // %printed =w call $printf(l $fmt_int, w %result)
+            buffer.push_str(&format!("%printed =w call $printf(l $fmt_int, ..., w {result})\n")); // %printed =w call $printf(l $fmt_int, w %result)
             buffer.push_str(&format!("  ret {result}\n"));
             buffer
         }

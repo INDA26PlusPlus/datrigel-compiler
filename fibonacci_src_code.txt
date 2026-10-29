@@ -1,0 +1,15 @@
+a)
+fibo <- 0.
+nacci <- 1.
+ntimes <- 5.
+
+loop (
+    tal <- fibo + nacci.
+    fibo <- nacci.
+    nacci <- tal.
+    count <- count + 1.
+    : count = ntimes - 1
+    ).
+
+
+V.S.V tal
